@@ -1,0 +1,228 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  git の入れ子管理
+\end{frame}
+
+\begin{frame}[t]{git の入れ子管理}{子 repository の使用}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+      {\small
+        \onslide*<1-5>{repo1}\onslide*<6-20>{\color{blue}repo1\color{black}}\onslide*<21->{\color{green}repo1\color{black}}
+
+        ~~{\vbar}-- libs
+
+        \onslide*<3->{
+          ~~{\vbar}~~~~{\vbar}-- \alert<9->{repo2}
+
+          ~~{\vbar}~~~~{\vbar}~~~~{\vbar}-- ...
+        }
+
+        ~~{\vbar}~~~~{\vbar}-- ...
+
+        \onslide*<3->{~~{\vbar}-- .gitmodules}
+
+        ~~{\vbar}-- ...
+        \vspace{3ex}
+
+        \onslide*<11->{
+          \onslide*<-23>{\color{blue}clone\color{black}}\onslide*<24->{\color{green}clone\color{black}}
+
+          ~~{\vbar}-- libs
+
+          ~~{\vbar}~~~~{\vbar}-- \alert<26->{repo2}
+
+          \onslide*<15->{~~{\vbar}~~~~{\vbar}~~~~{\vbar}-- ...}
+
+          ~~{\vbar}~~~~{\vbar}-- ...
+
+          ~~{\vbar}-- .gitmodules
+
+          ~~{\vbar}-- ...
+        }
+      }
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+
+      \onslide*<1>{
+        別 repository の repo2 を
+
+        repo1 の中で入れ子管理する
+
+        (repo1 の submodule にする)
+      }
+
+      \onslide*<2-3>{
+        \alert{workspace の top ディレクトリ}で
+        \vspace{2ex}
+
+        \$ git submodule add \textit{URI} libs/repo2
+        \vspace{4ex}
+
+        \onslide<3->{
+          repo2 が clone され、
+
+          .gitmodules が作成される
+        }
+      }
+
+      \onslide*<4-6>{
+        .gitmodules を commit すれば
+
+        submodule 化完了
+        \vspace{2ex}
+
+        \onslide*<5-6>{
+          \$ git add .gitmodules
+
+          \$ git commit
+        }
+      }
+
+      \onslide*<7-9>{
+        repo2 以下のディレクトリで
+
+        何をやっても
+
+        repo1 には影響を与えない
+
+        (repo2 以下のディレクトリでは
+
+        ~repo1 は見えない)
+        \vspace{2ex}
+
+        \onslide*<8->{
+          \$ cd libs/repo2
+
+          \$ touch a
+
+          \$ git add a
+
+          \$ git commit
+
+          \$ git push origin master
+        }
+        \vspace{2ex}
+      }
+
+      \onslide*<10-12>{
+        repo1 を clone してみる
+        \vspace{2ex}
+
+        \$ git clone repo1 clone
+        \vspace{4ex}
+
+        \onslide*<12>{repo2 の中身は空}
+      }
+
+      \onslide*<13-16>{
+        repo2 を clone するには、別途 submodule update が必要
+        \vspace{2ex}
+
+        \onslide*<14->{
+          \$ git submodule update {\bslash}
+
+          ~~~~{\dhyphen}init {\dhyphen}recursive
+
+          (全 submodule を clone)
+          \vspace{1ex}
+
+          \onslide*<16->{
+            {\dhyphen}init
+
+            初めて update する
+
+            submodule がある時に必要
+            \vspace{2ex}
+
+            {\dhyphen}recursive
+
+            repo2 がさらに別の submodule を
+
+            管理している場合に必要
+          }
+        }
+      }
+
+      \onslide*<17-18>{
+        でも、repo2 の HEAD が古い commit を指している
+        \vspace{2ex}
+
+        \onslide*<18>{
+          これは、repo1 が submodule の
+
+          バージョンまで管理しているから
+
+          (repo1 で commit した時点の
+
+          ~repo2 の commit へ
+
+          ~checkout している)
+        }
+        \vspace{2ex}
+      }
+      \onslide*<19-21>{
+        repo2 のバージョンを上げるには、
+
+        repo1 で repo2 の新しいバージョンを commit
+        \vspace{2ex}
+
+        \onslide*<20->{
+          \$ git add libs/repo2
+
+          \$ git commit
+
+          \$ git push origin master
+        }
+      }
+
+      \onslide*<22->{
+        clone を更新して
+
+        再度 submodule update を行えば
+
+        clone でも repo2 の HEAD が
+
+        切り替わる
+        \vspace{2ex}
+
+        \onslide*<23->{
+          \$ git fetch {\dhyphen}all -p
+
+          \$ git merge remotes/origin/master
+
+          \onslide*<25->{
+            \$ git submodule update {\dhyphen}recursive
+            \vspace{2ex}
+
+            (初めて submodule update する
+
+            ~repository は無いので
+
+            ~{\dhyphen}init は不要)
+          }
+        }
+      }
+    \end{widecolumn}
+
+  \end{columns}
+\end{frame}
+

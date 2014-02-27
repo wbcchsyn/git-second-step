@@ -1,0 +1,298 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  merge と rebase の使用方法例
+\end{frame}
+
+\begin{frame}[t]{branch 輪廻から解脱}{}
+  \begin{center}
+    \begin{tikzpicture} [x=1em, y=1ex]
+      \onslide<17->{\node (3) [commit] at (8,20) {master};}
+
+      \onslide<9->{
+        \onslide<13-14>{\node (E) [commit] at (16,16) {master devel};}
+        \onslide*<15->{\node (E) [commit] at (16,16) {devel};}
+        \onslide*<-12>{\node (E) [commit] at (16,16) {master};}
+        \node (D) [commit] at (16,12) {};
+      }
+
+      \onslide<15-16>{
+        \node (2) [commit, rectangle split, rectangle split parts=2] at (8,8){
+          {master}
+          \nodepart{second}{\tiny remotes/origin/master}
+        };
+      }
+      \onslide*<7-14,17->{\node (2) [commit] at (8,8) {remotes/origin/master};}
+      \onslide*<7->{\node (1) [commit] at (8,4) {};}
+
+      \onslide*<3-4>{\node (D) [commit] at (0,12) {master};}
+
+      \onslide*<3-8>{
+        \node (C) [commit] at (0,8) {\onslide*<5->{master}};
+        \node (B) [commit] at (0,4) {};
+      }
+
+      \onslide<-2>{\node (A) [commit] at (0,0) {master};}
+      \onslide*<3->{\node (A) [commit] at (0,0) {};}
+
+      \onslide*<17->{
+        \draw (E) -- (3);
+        \draw (2) -- (3);
+      }
+
+      \onslide*<9->{
+        \draw (D) -- (E);
+        \draw (2) -- (D);
+      }
+
+      \onslide*<7->{
+        \draw (1) -- (2);
+        \draw (A) -- (1);
+      }
+
+      \onslide*<3-4>{\draw (C) -- (D);}
+
+      \onslide*<3-8>{
+        \draw (B) -- (C);
+        \draw (A) -- (B);
+      }
+    \end{tikzpicture}
+  \end{center}
+
+  \onslide*<1>{
+    remote から clone したレポジトリで
+
+    他の人と共同開発する場合
+  }
+
+  \onslide*<2-3>{
+    master で開発開始
+  }
+
+  \onslide*<4-5>{
+    master の履歴を整理
+    \vspace{4ex}
+
+    \$ git rebase -i ***
+  }
+
+  \onslide*<6-7>{
+    remote branch をアップデート
+
+    \$ git fetch {\dhyphen}all -p
+  }
+
+  \onslide*<8-9>{
+    remote branch の更新を master に反映
+
+    \$ git rebase remotes/origin/master
+  }
+
+  \onslide*<10>{
+    commit tree を 1本にしたい場合は
+
+    これで終了
+  }
+
+  \onslide*<11>{
+    github で pull request 出す時は、
+
+    この状態で出すと良い
+  }
+
+  \onslide*<12-13>{
+    commit tree を 2本にする場合は
+
+    現在の HEAD に適当な新しいブランチ作成
+
+    \$ git branch devel
+  }
+
+  \onslide*<14-15>{
+    HEAD を remote branch の最新状態まで
+
+    巻き戻す
+
+    \$ git reset remotes/origin/master
+  }
+
+  \onslide*<16-17>{
+    devel を no first forward で merge
+
+    \$ git merge devel {\dhyphen}no-ff
+  }
+
+\end{frame}
+
+
+\begin{frame}[t]{branch 輪廻から解脱}{}
+
+  ところで
+
+  「no first forward の merge をする場合は
+
+  　rebase 必要ないのでは？」
+
+  と思った人
+  \vspace{4ex}
+
+  \onslide<2->{\alert{鋭い}}
+  \vspace{4ex}
+
+  \onslide<3->{
+    と見せて
+
+    \alert{あまい}
+  }
+
+\end{frame}
+
+
+\begin{frame}<1-13>[t]{branch 輪廻から解脱}{}
+
+  自分が作業している間に remote branch が更新されたら
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<99>{\node (dummy) [commit] at (0, 16) {};}
+
+          \onslide<3->{\node (C) [commit] at (0, 12) {};}
+
+          \node (2) [commit] at (3,8) {};
+          \node (1) [commit] at (3,4) {};
+          \node (B) [commit] at (0,4) {};
+          \node (A) [commit] at (0,0) {};
+
+          \onslide<3->{
+            \draw (2) -- (C);
+            \draw (B) -- (C);
+          }
+
+          \draw (1) -- (2);
+          \draw (A) -- (1);
+          \draw (A) -- (B);
+        \end{tikzpicture}
+
+        merge のみ
+      \end{center}
+    \end{narrowcolumn}
+
+    \begin{narrowcolumn}
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<99>{\node (dummy) [commit] at (0, 16) {};}
+
+          \onslide<7->{
+            \node (2) [commit] at (3,12) {};
+            \node (1) [commit] at (3,8) {};
+          }
+
+          \onslide*<-6>{
+            \node (2) [commit] at (3,8) {};
+            \node (1) [commit] at (3,4) {};
+          }
+          \node (B) [commit] at (0,4) {};
+          \node (A) [commit] at (0,0) {};
+
+          \onslide<7->{\draw (B) -- (1);}
+          \draw (1) -- (2);
+          \onslide<-6>{\draw (A) -- (1);}
+          \draw (A) -- (B);
+        \end{tikzpicture}
+
+        rebase のみ
+      \end{center}
+    \end{narrowcolumn}
+
+    \begin{narrowcolumn}
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+          \onslide<10->{
+            \node (C) [commit] at (0,16) {};
+            \node (2) [commit] at (3,12) {};
+            \node (1) [commit] at (3,8) {};
+          }
+
+          \onslide*<-9>{
+            \node (2) [commit] at (3,8) {};
+            \node (1) [commit] at (3,4) {};
+          }
+          \node (B) [commit] at (0,4) {};
+          \node (A) [commit] at (0,0) {};
+
+          \onslide<10->{
+            \draw (2) -- (C);
+            \draw (B) -- (C);
+            \draw (B) -- (1);
+          }
+          \draw (1) -- (2);
+          \onslide<-9>{\draw (A) -- (1);}
+          \draw (A) -- (B);
+        \end{tikzpicture}
+
+        rebase + merge
+      \end{center}
+    \end{narrowcolumn}
+
+  \end{columns}
+  \vspace{2ex}
+
+  \onslide*<2>{rebase せずに merge で取り込む}
+
+  \onslide*<4-5>{
+    \alert{今回は} branch が 2又に分かれる
+
+    \onslide*<5>{
+      より正確には、開発ラインの数 (= 開発者の数？)だけ
+
+      branch が分かれ、merge が入り乱れる
+    }
+  }
+
+  \onslide*<6>{rebase で取り込む}
+
+  \onslide*<8>{開発ラインの数によらず、branch は 1本}
+
+  \onslide*<9>{rebase してから no first forward merge で取り込む}
+
+  \onslide*<11>{
+    開発ラインの数によらず、
+
+    更新の有る branch は常に 1本
+  }
+
+
+  \onslide*<12>{
+    その他、更新の無い branch が最大 1本
+
+    branch が合計 3本以上になる事は無い
+  }
+
+  \onslide*<13>{
+    結論
+
+    branch のアミダクジ状態を避ける為には
+
+    rebase は必要
+  }
+\end{frame}

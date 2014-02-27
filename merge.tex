@@ -1,0 +1,485 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  2種類の merge と rebase
+\end{frame}
+
+\begin{frame}[t]{2種類の merge}{}
+
+  git の merge には
+
+  ``first forward'' と ``no first forward''
+
+  の2種類が存在
+  \vspace{4ex}
+
+  デフォルトではその時の branch の状況によって
+
+  自動で使い分けられる
+  \vspace{2ex}
+
+  オプションを指定する事である程度制御可能
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge}{HEAD が merge 対象の先祖の時}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<3->{\node (d4) [commit] at (4, 16) {A B};}
+          \onslide*<1-2>{\node (d4) [commit] at (4, 16) {B};}
+          \node (d3) [commit] at (4, 12) {};
+          \onslide*<-2>{\node (m2) [commit] at (0, 8)  {A};}
+          \onslide*<3->{\node (m2) [commit] at (0, 8)  {};}
+          \node (m1) [commit] at (0, 4) {};
+          \node (m0) [commit] at (0, 0) {};
+
+          \draw (d3) -- (d4);
+          \draw (m2) -- (d3);
+          \draw (m1) -- (m2);
+          \draw (m0) -- (m1);
+
+        \end{tikzpicture}
+
+        {\footnotesize{(A \alert{$\leftarrow$ HEAD})}}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+
+      \onslide*<1>{
+        A は B の先祖の commit
+      }
+
+      \onslide*<2-4>{
+        \$ git merge B
+        \vspace{2ex}
+
+        \onslide*<4>{branch の向き先変更だけ}
+      }
+
+      \onslide*<5>{
+        新しい commit が作られないので
+
+        commit message の入力も無し
+        \vspace{2ex}
+
+        このように、
+
+        新しい commit を作らない merge が
+
+        first forward merge
+      }
+
+      \onslide*<6>{
+        ちなみに、push では通常
+
+        first forward merge を使用
+      }
+    \end{widecolumn}
+
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge}{HEAD が merge 対象が先祖では無い}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<9->{\node (m7) [commit] at (0, 28) {A};}
+          \onslide*<4-8>{\node (m7) [commit] at (0, 28) {}};
+
+          \node (d6) [commit] at (4, 24) {B};
+          \node (d5) [commit] at (4, 20) {};
+          \node (d2) [commit] at (4, 8) {};
+
+          \node (m4) [commit] at (0, 16) {\onslide*<-8>{A}};
+          \node (m3) [commit] at (0, 12) {};
+          \node (m1) [commit] at (0, 4) {};
+          \node (m0) [commit] at (0, 0) {};
+
+          \draw (d5) -- (d6);
+          \draw (d2) -- (d5);
+          \draw (m1) -- (d2);
+
+          \draw (m3) -- (m4);
+          \draw (m1) -- (m3);
+          \draw (m0) -- (m1);
+
+          \onslide*<6->{
+            \draw [line width=2pt, color=green, ->] (m1) -- (m3) -- (m4);
+            \draw [line width=2pt, color=green, ->] (d6) -- (m7);
+          }
+          \onslide*<4->{
+            \draw [line width=2pt, color=red, ->] (m4) -- (m7);
+          }
+          \onslide*<3->{
+            \draw [line width=2pt, color=red, ->] (m1) -- (d2) -- (d5) -- (d6);
+          }
+        \end{tikzpicture}
+
+        {\footnotesize{(A \alert{$\leftarrow$ HEAD})}}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+
+      \onslide*<1>{
+        A と B は branch の分岐後
+
+        それぞれ開発
+      }
+
+      \onslide*<2-4>{
+        \$ git merge B
+        \vspace{2ex}
+
+        \onslide*<3-4>{
+          B の更新分のパッチを
+
+          A に適用し、
+
+          新しい commit object を作成}
+      }
+
+      \onslide*<5-6>{
+        衝突が無ければ、A のパッチを
+
+        B に適用しても同じ物になるはず
+      }
+
+      \onslide*<7>{
+        新しい commit を作るので
+
+        commit message を入力
+      }
+
+      \onslide*<8-9>{
+        HEAD を新しい commit へ移動
+      }
+
+      \onslide*<10>{
+        このように、
+
+        新しい commit が作られる merge が
+
+        no first forward merge
+      }
+    \end{widecolumn}
+
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge}{commit tree が 2又の時}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \node (m7) [commit] at (0, 28) {A};
+
+          \node (d6) [commit] at (4, 24) {B};
+          \node (d5) [commit] at (4, 20) {};
+          \node (d2) [commit] at (4, 8) {};
+
+          \node (m4) [commit] at (0, 16) {};
+          \node (m3) [commit] at (0, 12) {};
+          \onslide*<4-6>{\node (m3) [commit] at (0, 12) {\alert{?}};}
+          \node (m1) [commit] at (0, 4) {};
+          \node (m0) [commit] at (0, 0) {};
+
+
+          \onslide*<1,8->{
+            \draw (d6) -- (m7);
+            \draw (d5) -- (d6);
+            \draw (d2) -- (d5);
+            \draw (m1) -- (d2);
+
+            \draw (m4) -- (m7);
+            \draw (m3) -- (m4);
+            \draw (m1) -- (m3);
+            \draw (m0) -- (m1);
+          }
+
+          \onslide*<2-7>{
+            \draw (d6) -- (m7);
+            \draw (d5) -- (d6);
+            \draw (m4) -- (d5);
+            \draw (m3) -- (m4);
+            \draw (d2) -- (m3);
+            \draw (m1) -- (d2);
+            \draw (m0) -- (m1);
+          }
+        \end{tikzpicture}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+      \onslide*<1-2>{
+        ちなみに、オプション無しで
+
+        \$ git log A
+
+        を実行すると、
+      }
+
+      \onslide*<3>{こう勘違いするかも}
+
+      \onslide*<4-5>{
+        例えばここ、
+        \vspace{2ex}
+
+        どうなってるの？
+        \vspace{4ex}
+
+        \onslide*<5>{
+          B の 1個目の commit と
+
+          A の 1個目の commit が
+
+          merge されて......
+          \vspace{4ex}
+
+          あれ、衝突は?
+        }
+      }
+
+      \onslide*<6>{どうもなっていません!}
+
+      \onslide*<7->{
+        あくまでも、正しいのはこっち
+        \vspace{2ex}
+
+        \onslide*<9->{
+          \$ git log {\dhyphen}graph A
+          \vspace{2ex}
+
+          で確認可能
+        }
+        \vspace{2ex}
+
+        \onslide*<10->{
+          merge による変化は、
+
+          commit 1個追加のみ
+        }
+        \vspace{2ex}
+
+        \onslide*<11>{
+          既存の commit は
+
+          変化無し
+        }
+      }
+    \end{widecolumn}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge}{HEAD が merge 対象の先祖の時}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<5->{\node (m5) [commit] at (0, 20) {A};}
+          \onslide<3>{\node (d4) [commit] at (4, 16) {A B};}
+          \onslide*<1-2,4->{\node (d4) [commit] at (4, 16) {B};}
+          \node (d3) [commit] at (4, 12) {};
+          \node (m2) [commit] at (0, 8)  {\onslide*<-2,4>{A}};
+          \node (m1) [commit] at (0, 4) {};
+          \node (m0) [commit] at (0, 0) {};
+
+
+          \onslide*<5->{
+            \draw (d4) -- (m5);
+            \draw (m2) -- (m5);
+          }
+          \draw (d3) -- (d4);
+          \draw (m2) -- (d3);
+          \draw (m1) -- (m2);
+          \draw (m0) -- (m1);
+
+        \end{tikzpicture}
+
+        {\footnotesize{(A \alert{$\leftarrow$ HEAD})}}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+      \onslide*<1>{
+        A が B の先祖の場合
+        \vspace{4ex}
+
+        merge コマンドに
+
+        オプションを付与して
+
+        merge 方法を選択可能
+      }
+
+      \onslide*<2-3>{
+        {\dhyphen}ff-only オプションで
+
+        first forward を強制
+        \vspace{2ex}
+
+        \$ git merge B {\dhyphen}ff-only
+        \vspace{2ex}
+
+        first forward できない場合に
+
+        エラーになる
+      }
+
+      \onslide*<4-5>{
+        {\dhyphen}no-ff オプションで
+
+        no first foward を強制
+        \vspace{2ex}
+
+        \$ git merge {\dhyphen}no-ff B
+        \vspace{2ex}
+
+        HEAD が merge 対象の先祖でも
+
+        無理矢理 no first forward で
+
+        merge する
+      }
+
+      \onslide*<6>{
+        デフォルトオプションは {\dhyphen}ff
+        \vspace{2ex}
+
+        可能であれば first forward,
+
+        無理ならば no first forward
+        \vspace{2ex}
+
+        という意味
+      }
+
+    \end{widecolumn}
+
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{merge の種類とオプションまとめ}{}
+
+  \begin{table}[htb]
+
+    \begin{tabular}{c|ccc}
+      \shortstack{\footnotesize HEAD が \\ \footnotesize 対象の} & {\small {\dhyphen}ff-only} & {\small {\dhyphen}ff (デフォルト)} & {\small {\dhyphen}no-ff} \\ \hline
+      先祖 & {\small first forward} & {\small first forward} & {\small no first forward} \\
+      & & & \\
+      \shortstack{\footnotesize 先祖 \\ \footnotesize ではない} & エラー & {\small no first forward} & {\small no first forward}
+    \end{tabular}
+  \end{table}
+
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge の特徴}{first forward merge}
+  first forward merge
+  \vspace{2ex}
+
+  \begin{itemize}
+  \item 衝突等 merge に伴う事故が最も少ない
+    \vspace{2ex}
+
+  \item {\dhyphen}ff-only オプションで安全性の担保も可能
+    \vspace{2ex}
+
+  \item 過去の履歴が一直線なので簡単
+  \end{itemize}
+  \vspace{2ex}
+\end{frame}
+
+
+\begin{frame}[t]{2種類の merge の特徴}{no first forward merge}
+  no first forward merge
+  \vspace{2ex}
+
+  \begin{itemize}
+  \item branch だけで色々と主張できる
+    \begin{itemize}
+    \item 別 branch の複数の commit は関連する
+    \item 別 branch の commit を 1個だけ適用すると
+
+      中途半端な状況になる
+    \end{itemize}
+    \vspace{2ex}
+
+  \item 過去の経緯が複雑
+    \vspace{2ex}
+
+  \item 親が複数有るので、パッチや履歴対象の操作が難しくなる\footnote{この欠点については今回の範囲を超えるので省略}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[t]{merge の問題点}{}
+  HEAD が merge 対象の先祖の場合は大きな問題は無い
+
+  first forward と no first forward の好きな方を選べば良い
+  \vspace{2ex}
+
+  問題はそれ以外の場合
+
+  \onslide<2->{特に、remote repository から更新を取り入れる時}
+  \vspace{2ex}
+
+  \onslide<3->{
+    \begin{itemize}
+    \item 「更新と取り込むため」だけの
+
+      無意味な branch, commit が出来る
+
+      (履歴を追う際のノイズになる)
+      \onslide<4->{\item 複数 branch 間の merge は履歴が複雑}
+    \end{itemize}
+  }
+
+  \onslide<5->{履歴を追えなければ SCM の意味が無い}
+\end{frame}

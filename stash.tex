@@ -1,0 +1,131 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  未 commit の作業を一時中断する
+\end{frame}
+
+\begin{frame}[t]{未 commit の作業を一時中断する}{}
+
+  \onslide*<1-2>{
+    rebase や cherry-pick は便利だが、
+
+    workspace と cached が clean な時しか実行不可
+
+    (git status で差分が出てきて駄目)
+
+    checkout や merge も clean な状況で行った方が安全
+
+    \vspace{4ex}
+
+    \onslide<2->{
+      未 commit のファイルがある状態で
+
+      rebase や cherry-pick を行うには
+
+      どうしたら良いか？
+    }
+  }
+
+  \onslide*<3-8>{
+    \begin{enumerate}
+    \item 未 commit のファイルを退避
+      \onslide<4->{\item git reset {\dhyphen}hard 実行}
+      \onslide<5->{\item rebase や cherry-pick 実行}
+      \onslide<6->{\item 退避させたファイルを戻す}
+    \end{enumerate}
+    \vspace{4ex}
+
+    \onslide<7->{手作業が面倒なので、自動化したい}
+
+    \onslide<8->{そこで stash}
+  }
+
+  \onslide*<9-10>{
+    \$ git stash
+    \vspace{2ex}
+
+    workspace と cached の変更をスタックし
+
+    clean にする
+    \vspace{4ex}
+
+    \onslide<10>{
+      \$ git stash pop
+      \vspace{2ex}
+
+      スタックから workspace と cached の変更を取り出し
+
+      適用する
+    }
+  }
+
+  \onslide*<11-15>{
+    未 commit のファイルがある状態で rebase や cherry-pick を行う
+
+    (stash 使用バージョン)
+    \vspace{2ex}
+
+    \onslide<12->{
+      \begin{enumerate}
+      \item \$ git stash
+        \onslide<13->{\item rebase や cherry-pick 実行}
+        \onslide<14->{\item \$ git stash pop}
+      \end{enumerate}
+      \vspace{2ex}
+
+      \onslide<15->{merge や checckout で使っても便利}
+    }
+  }
+
+  \onslide*<16>{
+    ちなみに、
+    \vspace{2ex}
+
+    \$ git config {\dhyphen}global rebase.autostash true
+    \vspace{2ex}
+
+    とすると、
+    \vspace{4ex}
+
+    git rebase と実行するだけで
+    \vspace{2ex}
+
+    stash $\rightarrow$ rebase $\rightarrow$ stash pop
+    \vspace{2ex}
+
+    を実行してくれるようになる
+  }
+
+  \onslide*<17->{
+    補足
+    \vspace{2ex}
+
+    stash は複数の変更をスタック、保存可能
+    \vspace{2ex}
+
+    stash した branch とは別の branch で pop する事も可能
+    \vspace{2ex}
+
+    でも、やり過ぎるとかえって頭が混乱するので程々に
+
+    (stash pop で衝突とかすると、泣きたくなります)
+    \vspace{2ex}
+
+    複雑になる場合は、一時 branch 作った方が楽かも
+  }
+\end{frame}

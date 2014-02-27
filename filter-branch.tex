@@ -1,0 +1,80 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}[t]{git の入れ子管理}{repository の分離}
+  git submodule が他 repository を特定ディレクトリに
+
+  対応させるコマンドなら、
+  \vspace{2ex}
+
+  特定ディレクトリを独立した repository に
+
+  変換するコマンドは
+
+  git filter-branch
+\end{frame}
+
+
+\begin{frame}[t]{git の入れ子管理}{repository の分離}
+
+  workspace のトップディレクトリで
+  \vspace{2ex}
+
+  \$ git filter-branch {\dhyphen}subdirectory-filter {\bslash}
+  ~~~~\textit{path\_to\_the\_directory} {\dhyphen} {\dhyphen}all
+  \vspace{4ex}
+
+  \onslide*<2->{
+    reflog も新しくなるので注意
+
+    (reflog で過去の commit を探して切り戻す事は不可能)
+  }
+  \vspace{2ex}
+
+  \onslide*<3->{tag も残るが、中身は変更される}
+  \vspace{2ex}
+
+  \onslide*<3->{
+    ただし、filter-branch 実行前の branch だけなら
+
+    .git/refs/original/refs/head 以下のテキストファイルに
+
+    ハッシュ値が記載
+
+    そこから復旧可能
+  }
+\end{frame}
+
+\begin{frame}[t]{git の入れ子管理}{}
+  ここでは紹介しきれていないが
+
+  submodule も filter-branch も癖が有るコマンドなので
+
+  要注意
+  \vspace{4ex}
+
+  実行する前に man を良く確認し、
+
+  バックアップを取ってから
+
+  実行する事を推奨
+  \vspace{4ex}
+
+  でも、repository を細かく管理できるのは
+
+  それを補ってあまり有る利便性（だと思う）
+\end{frame}

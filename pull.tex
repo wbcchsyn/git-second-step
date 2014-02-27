@@ -1,0 +1,151 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  今更 git pull
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  ネットでは
+
+  「git を良く知らない間は pull はやめた方が良い」
+
+  と良く言われる
+  \vspace{4ex}
+
+  \onslide*<2>{
+    その割には、
+
+    良く知っている人はどうやって使うのか
+
+    あまり記載が無いので、私なりの回答をご紹介
+  }
+
+  \onslide*<3->{なぜやめた方が良いのか？}
+  \vspace{4ex}
+
+  \onslide*<4->{
+    git pull はリモートブランチの更新を取り込む
+
+    shell script
+  }
+  \vspace{2ex}
+
+  \onslide*<5->{デフォルトの挙動は、fetch + merge}
+  \vspace{2ex}
+
+  \onslide*<6->{merge のアンチパターン直撃}
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  git pull との上手な接し方
+  \onslide*<2->{
+    \begin{enumerate}
+    \item 使わない
+      \onslide*<3->{\item 挙動を fetch + rebase に変更}
+      \onslide*<4->{\item no first forward merge を禁止}
+    \end{enumerate}
+  }
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  git pull 使わない
+  \vspace{2ex}
+
+  \begin{itemize}
+  \item fetch + rebase で十分
+  \item remote の更新確認は頻繁に行う
+
+    しかし、更新取り込みは別のタイミングで行いたい
+
+    更新確認の度に衝突の危機になったり、
+
+    自分のコードが変更されるるのは非生産的
+
+    思考を中断しない為に、結局 fetch を使う
+  \end{itemize}
+  \vspace{2ex}
+
+  \onslide*<2>{私は、普段この方法}
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  挙動を fetch + rebase にする
+  \vspace{2ex}
+
+  \onslide*<1->{
+    \begin{itemize}
+    \item 手軽に remote の更新を local に反映できる
+    \item 衝突が発生しやすい
+    \end{itemize}
+  }
+  \vspace{2ex}
+
+  \onslide*<2->{
+    設定方法
+
+    \$ git config {\dhyphen}global pull.rebase true
+  }
+  \vspace{2ex}
+
+  \onslide*<3>{簡単な開発の場合は、私はこの方法を使います}
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  no first forward merge を禁止
+  \vspace{2ex}
+
+  \onslide*<1->{
+    \begin{itemize}
+    \item local での開発には開発用 branch で行う必要あり
+    \item pull に限らず、no first foward を禁止すると
+
+      merge に関わる事故や問題の多くを回避可能
+
+      うっかりミス防止のため、システム的に禁止
+    \item no first forward merge は、有るから使う程度
+
+      個人的には、無くても大きな問題は無い気がする
+    \end{itemize}
+  }
+  \vspace{2ex}
+
+  \onslide*<2->{
+    設定方法
+
+    \$ git config {\dhyphen}global merge.ff only
+  }
+  \vspace{2ex}
+
+  \onslide*<3>{昔、この方法を使っていました}
+\end{frame}
+
+
+\begin{frame}[t]{今更 git pull}{}
+  結論
+  \vspace{4ex}
+
+  好きな方法で良い
+  \vspace{2ex}
+
+  ただし、remote repository は汚すな
+\end{frame}

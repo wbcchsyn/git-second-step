@@ -1,0 +1,64 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\documentclass[dvipdfmx,slide,12pt]{beamer}
+\usepackage{pxjahyper} % しおりの和文対応
+\usetheme{PaloAlto} % テーマ名
+\usepackage{minijs} % jsarticle のミニ版
+\renewcommand{\kanjifamilydefault}{\gtdefault} % デフォルトフォントをゴシックに
+\setbeamertemplate{navigation symbols}{} % dvipdfmx 対応
+\usepackage{mymacro}
+
+\title{git 次の一歩}
+
+\begin{document}
+
+\include{header}
+
+\section{2種類の merge と rebase}
+\include{merge}
+\include{rebase}
+
+\section{過去の履歴を書き換える}
+\include{rebase2}
+
+\section{merge と rebase の使用方法例}
+\include{how_to_commit}
+
+\section{今更 git pull}
+\include{pull}
+
+\section{特定の commit だけ取り込む}
+\include{cherry}
+
+\section{もう一度 git add}
+\include{add}
+
+\section{未 commit の作業を一時中断する}
+\include{stash}
+
+\section{迷子になったら}
+\include{reflog}
+
+\section{git の入れ子管理}
+\include{submodule}
+\include{filter-branch}
+
+\section{最後に}
+\include{conf}
+
+\end{document}

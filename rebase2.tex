@@ -1,0 +1,625 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  過去の履歴を書き換える
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  SCM の悪い履歴とは？
+
+  \onslide*<2->{
+    \begin{itemize}
+    \item 紆余曲折がそのままでノイズ多
+      \begin{enumerate}
+      \item method A, B, C を実装
+      \item method B のバグ修正
+      \item 結局、method A, B は削除
+      \end{enumerate}
+      \onslide*<3->{最初から method C だけ書いてよ}
+      \vspace{2ex}
+
+      \onslide*<4->{
+      \item 動作確認出来ない的 commit
+
+        (括弧の閉じ忘れで動かない等)
+      }
+
+    \end{itemize}
+  }
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  悪い履歴を残さないためには?
+  \vspace{4ex}
+
+  \onslide*<2->{
+    commit の度にしっかりテスト、吟味する
+    \onslide*<3->{
+      \begin{enumerate}
+      \item 副作用として、commit のハードルが上がる
+        \onslide*<4->{\item 大きい commit を少数行うようになる}
+        \onslide*<5->{
+        \item 突き詰めると、commit 1個 だけ(完成品のみ)
+
+          に行き着く
+
+          super water fall 万歳
+        }
+      \end{enumerate}
+    }
+  }
+  \vspace{4ex}
+
+  \onslide*<6->{少し大げさかもしれないが、何かおかしくない？}
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  悪い履歴を残さない、もう一つの方法は
+
+  過去の履歴の修正
+  \vspace{4ex}
+
+  \onslide*<2->{
+    \begin{itemize}
+    \item 古い commit のバグが、後になって発覚
+
+      \onslide*<3->{バグ修正 commit の追加より、古い commit の修正}
+      \vspace{2ex}
+
+      \onslide*<4->{
+      \item 最終的に、特定の commit が不要になった
+
+        \onslide*<5->{
+          不要部分の削除 commit より、
+
+          該当箇所を実装した commit 自体の削除
+        }
+      }
+    \end{itemize}
+  }
+  \vspace{4ex}
+
+  \onslide*<6->{
+    git なら、履歴の修正が可能
+
+    最終的に悪い履歴が残らなければ良い
+  }
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  ただし、履歴を修正してはいけない branch も有る
+  \vspace{2ex}
+
+  修正して良い例
+  \begin{itemize}
+  \item local repository の branch
+  \item クローズドな repository 内で
+
+    閲覧、更新者が限られた branch
+    \begin{itemize}
+    \item レビューのため、個人名をつけた branch
+    \item 担当者のアサインされた topic branch
+    \end{itemize}
+  \end{itemize}
+  \vspace{2ex}
+
+  修正してはいけない例
+  \begin{itemize}
+  \item 不特定多数の人が閲覧可能な branch
+  \item その他、一般的な remote reposiotry の branch
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  SCM の履歴はドキュメンタリーでは無い
+
+  不要な物は捨てて、必要十分な情報のみ残す
+  \vspace{2ex}
+
+  しかし、失敗を恐れて commit を控えれば、
+
+  SCM の機能を十分に使わない事になる
+  \vspace{4ex}
+
+  要するに、最終的に複数人で共有する branch へ
+
+  push する時までに直せば良い
+
+  それまでは気軽に commit するべき
+
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture}[x=1em, y=1ex]
+
+          \node (G) [commit] at (0, 24) {G};
+          \node (F) [commit] at (0, 20) {F};
+          \node (E) [commit] at (0, 16) {E};
+          \node (D) [commit] at (0, 12) {D};
+          \node (C) [commit] at (0, 8) {C};
+          \node (B) [commit] at (0, 4) {B};
+          \node (A) [commit] at (0, 0) {A};
+
+          \draw (F) -- (G);
+          \draw (E) -- (F);
+          \draw (D) -- (E);
+          \draw (C) -- (D);
+          \draw (B) -- (C);
+          \draw (A) -- (B);
+
+        \end{tikzpicture}
+
+        {\footnotesize{(G \alert{$\leftarrow$ HEAD})}}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+
+      直近 6個の履歴 (B, C, D, E, F, G) を見直す場合
+      \vspace{2ex}
+
+      \$ git rebase -i \textit{A}
+      \vspace{2ex}
+
+      を実行
+      \vspace{2ex}
+
+      (B の1個前の commit を指定する)
+
+      (commit の指定方法は branch, tag, ハッシュ値等)
+    \end{widecolumn}
+
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+
+  \begin{columns}
+
+    \begin{halfcolumn}
+      \code{\onslide*<-4>{\alert<2>{pick}}\onslide*<5->{\alert{r}}~824c7c9~message~B
+
+        \alert<2>{pick}~36dc484~message~C
+
+        \onslide*<-6>{\alert<2>{pick}}\onslide*<7->{\alert{f}}~9a7c30a~message~D
+
+        \onslide*<9->{\alert{\#}}\alert<2>{pick}~0ed3c2e~message~E
+
+        \onslide*<-10>{
+          \alert<2>{pick}~b7a1a35~message~F
+
+          \alert<2>{pick}~ac859a3~message~G
+        }
+
+        \onslide*<11->{
+          \alert{f}~ac859a3~message~G
+
+          pick~b7a1a35~message~F
+        }
+
+        ...
+      }
+
+    \end{halfcolumn}
+
+    \begin{halfcolumn}
+
+      \onslide*<1>{
+        エディタが開き、
+
+        左のような画面が表示
+        \vspace{2ex}
+
+        上が古く、下が新しい
+
+        (git log と逆なので注意)
+      }
+
+      \onslide*<2>{
+        この画面では、
+
+        どの履歴を編集するか指定
+        \vspace{4ex}
+
+        実際に履歴を編集するのは後
+        \vspace{2ex}
+
+        書き換えるのは主に\alert{この列}
+      }
+
+      \onslide*<3>{
+        ``pick'' は「何も手を加えない」という意味
+      }
+
+      \onslide*<4-5>{
+        B の commit message を
+
+        変更するには
+        \vspace{4ex}
+
+        B の ``pick'' を ``r'' に変更
+
+        (または、``reword'' に変更)
+      }
+
+      \onslide*<6-7>{
+        D の commit を
+
+        前の commit (C) と
+
+        1個にまとめるには
+        \vspace{4ex}
+
+        D の ``pick'' を ``f''に変更
+
+        (または、``fixup'' に変更)
+      }
+
+      \onslide*<8-9>{
+        E の commit を削除するには
+
+        E の行をコメントアウト
+        \vspace{2ex}
+
+        (履歴を残さない事以外は
+
+        git revert と似ている)
+      }
+
+      \onslide*<10-11>{
+        G の commit を
+        前の commit (C+D) と
+
+        1個にまとめるには
+        \vspace{4ex}
+
+        F と G の行を入れ替えて
+
+        G の ``pick'' を ``f'' に変更する
+      }
+
+      \onslide*<12>{
+        この状態でエディタを
+
+        保存、終了
+      }
+
+    \end{halfcolumn}
+
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  \begin{columns}
+
+    \begin{halfcolumn}
+
+      \begin{center}
+        \begin{tikzpicture}[x=1em, y=1ex]
+
+          \node (G) [commit] at (0, 24) {G};
+          \node (F) [commit] at (0, 20) {F};
+          \node (E) [commit] at (0, 16) {E};
+          \node (D) [commit] at (0, 12) {D};
+          \node (C) [commit] at (0, 8) {C};
+          \node (B) [commit] at (0, 4) {B};
+          \node (A) [commit] at (0, 0) {A};
+
+          \onslide*<-7>{
+            \draw (E) -- (F);
+          }
+
+          \draw (D) -- (E);
+
+          \onslide*<-5>{
+            \draw (F) -- (G);
+            \draw (C) -- (D);
+            \draw (B) -- (C);
+          }
+          \onslide*<-3>{\draw (A) -- (B);}
+
+
+          \onslide<8->{\node (F') [commit] at (6, 20) {F'};}
+          \onslide<6->{\node (C') [commit] at (6, 16) {C+D+G};}
+          \onslide<4->{\node (B') [commit] at (6, 4) {B'};}
+
+          \onslide*<8->{
+            \draw [line width=3pt, color=blue] (E) -- (F);
+            \draw [line width=3pt, color=blue] (C') -- (F');
+          }
+
+          \onslide*<6->{
+            \draw [line width=3pt, color=green] (B') -- (C');
+            \draw [line width=3pt, color=green] (F) -- (G);
+            \draw [line width=3pt, color=green] (C) -- (D);
+            \draw [line width=3pt, color=green] (B) -- (C);
+          }
+
+          \onslide*<4->{
+            \draw [line width=3pt, color=red] (A) -- (B');
+            \draw [line width=3pt, color=red] (A) -- (B);
+          }
+        \end{tikzpicture}
+      \end{center}
+
+    \end{halfcolumn}
+
+    \begin{halfcolumn}
+
+      \onslide*<1>{
+        まず、HEAD を A に切り替える
+      }
+
+      \onslide*<2>{
+        エディタが開き、
+
+        B の commit message
+
+        再入力
+      }
+
+      \onslide*<3-4>{
+        B のパッチを
+
+        A に適用
+      }
+
+      \onslide*<5-6>{
+        C+D+G のパッチを
+
+        B' へ適用
+        \vspace{4ex}
+
+        Commit message は
+
+        C の物を使用
+      }
+
+      \onslide*<7-8>{
+        F は pick なので、
+
+        何もせず F のパッチを
+
+        C+D+G に適用
+      }
+
+
+      \onslide*<9-10>{
+        その他、
+
+        r と f を一度に実行する
+
+        s (または squash)
+        \vspace{2ex}
+
+        \onslide*<10>{
+          rebase を一回止める
+
+          e (または edit)
+
+          (この間に色々出来る)
+          \vspace{2ex}
+
+          もある
+        }
+      }
+
+      \onslide*<11->{
+        でも、個人的には
+
+        s や e が役に立った
+
+        記憶が少ないので
+
+        説明省略
+      }
+      \vspace{2ex}
+
+      \onslide*<12->{気になる人は、man で調べて}
+
+    \end{halfcolumn}
+
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+
+  ところで、
+  \vspace{2ex}
+
+  \onslide*<2->{
+    初めから fixup する予定で commit したのなら
+
+    commit message に更新内容を書く必要は無い
+
+    どの commit に fixup する予定かを示せば十分
+  }
+  \vspace{2ex}
+
+  \onslide*<3->{
+    \$ git commit {\dhyphen}fixup=\textit{commit}
+
+    とすると、
+    \vspace{2ex}
+
+    ``fixup! {\textless}\textit{commit} の message\textgreater''
+
+    という commit message をつけて commit してくれる
+  }
+  \vspace{2ex}
+
+  \onslide*<4->{
+    同様の
+
+    \$ git commit {\dhyphen}squash=\textit{commit}
+
+    というコマンドもある
+  }
+  \vspace{2ex}
+
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  個人的には、commit の指定には
+
+  圧倒的に HEAD が多い
+  \vspace{4ex}
+
+  git commit {\dhyphen}fixup=HEAD
+
+  や
+
+  git commit {\dhyphen}squash=HEAD
+  \vspace{2ex}
+
+  は長いので、alias を張ってます
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  \$ git config {\dhyphen}global alias.fixup {\bslash}
+
+  ~~~~``commit {\dhyphen}fixup=HEAD''
+
+  \$ git config {\dhyphen}global alias.squash {\bslash}
+
+  ~~~~``commit {\dhyphen}squash=HEAD''
+  \vspace{2ex}
+
+  \onslide*<2->{
+    こうすると、
+
+    \$ git fixup (\$ git squash)
+
+    と実行するだけで
+    \vspace{2ex}
+
+    git commit {\dhyphen}fixup=HEAD
+
+    (git commit {\dhyphen}squash=HEAD)
+    \vspace{2ex}
+
+    と同じ意味になる
+  }
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+
+  さらに言うと、
+  \vspace{2ex}
+
+  \onslide*<2->{
+    commit message に fixup や squash の印が
+
+    フォーマットに従って記載してあれば、
+
+    rebase -i する時に f や s の印をつける事を
+
+    機械的に判断可能
+  }
+  \vspace{2ex}
+
+  \onslide*<3->{じゃあ、機械にやってもらいましょう}
+
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  \$ git rebase -i \textit{commit} {\dhyphen}autosquash
+  \vspace{4ex}
+
+
+  先頭が fixup! や squash! で始まり
+
+  続く commit message が commit 再編集の対象の場合
+  \vspace{2ex}
+
+
+  commit message に従って
+
+  fixup や squash の印をつけ、
+
+  commit の順番入れ替えまで実行済みの状態で
+
+  rebase -i のエディタが開く
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+  \$ git rebase -i \textit{commit} {\dhyphen}autosquash
+  \vspace{2ex}
+
+  も長い？
+  \vspace{4ex}
+
+  \onslide*<2>{
+    \$ git config {\dhyphen}global rebase.autosquash true
+    \vspace{2ex}
+
+    とすると、
+
+    rebase -i 時に毎回 {\dhyphen}autosquash をデフォルトでつけてくれる
+  }
+\end{frame}
+
+
+\begin{frame}[t]{過去の履歴を書き換える}{}
+
+  良く言われるように、git は branch 作成コストが低く
+
+  master に影響を与える事なく、実験が出来る
+  \vspace{2ex}
+
+  \onslide*<2->{
+    実験の結果、うまくいった commit を取り込み、
+
+    不要な commit を外すのにも rebase -i は便利
+    \vspace{2ex}
+
+    \onslide<3->{フィードバックを行うまでが実験！}
+  }
+  \vspace{2ex}
+
+  \onslide*<4->{
+    個人的には、push しない事前提に
+
+    デバッグ用のコード (print 文等) を仕込んだ
+
+    commit も好き
+  }
+\end{frame}

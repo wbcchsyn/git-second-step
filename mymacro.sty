@@ -1,0 +1,41 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git First Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows,trees}
+
+\tikzstyle{commit}=[rectangle, rounded corners, fill=blue!40, text centered, text=white]
+
+\newcommand{\HEAD}{\alert{{\scriptsize HEAD}}}
+%
+\newenvironment{narrowcolumn}{\begin{column}[t]{0.35\textwidth}}{\end{column}}
+\newenvironment{halfcolumn}{\begin{column}[t]{0.5\textwidth}}{\end{column}}
+\newenvironment{widecolumn}{\begin{column}[t]{0.65\textwidth}}{\end{column}}
+%
+%\newenvironment{repository}[1]{\begin{block}{#1}\begin{center}\begin{tikzpicture}} {\end{tikzpicture}\end{center}\end{block}}
+%\newenvironment{leftrepository}[1]{\begin{block}{#1}\begin{tikzpicture}} {\end{tikzpicture}\end{block}}
+%
+\newcommand{\vbar}{\texttt{|}}
+\newcommand{\bslash}{$\backslash$}
+\newcommand{\dhyphen}{\texttt{--}}
+\newcommand{\hyphen}{\texttt{-}}
+%
+\newcommand{\code}[1]{\color{blue}{\small #1}\color{black}}
+%\newcommand{\remotebranch}[1]{{\scriptsize #1}}
+%\newcommand{\commitmessage}[1]{\color{white}#1\color{black}}

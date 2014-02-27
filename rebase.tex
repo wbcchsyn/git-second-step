@@ -1,0 +1,164 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}[t]{first forward merge できない場合}{}
+
+  \begin{columns}
+
+    \begin{narrowcolumn}
+
+      \begin{center}
+        \begin{tikzpicture} [x=1em, y=1ex]
+
+          \onslide<11-13,16->{
+            \node (d11) [commit] at (4, 22) {A};
+            \node (d9) [commit] at (4, 18) {};
+          }
+
+          \onslide*<2-5>{\node (m8) [commit] at (0, 16) {A};}
+
+          \onslide*<9-10>{\node (d7) [commit] at (4, 14) {A B};}
+          \onslide*<1-8,11->{\node (d7) [commit] at (4, 14) {B};}
+          \node (d5) [commit] at (4, 10) {};
+          \node (d3) [commit] at (4, 6) {};
+
+          \onslide*<2-5,9-13,16->{\node (m6) [commit] at (0, 12) {};}
+          \onslide*<1,6-8,14-15>{\node (m6) [commit] at (0, 12) {A};}
+          \node (m4) [commit] at (0, 8) {};
+          \node (m2) [commit] at (0, 4) {};
+          \node (m0) [commit] at (0, 0) {};
+
+          \onslide*<11-13,16->{
+            \draw [line width=3pt, color = red] (d9) -- (d11);
+            \draw [line width=3pt, color = green] (d7) -- (d9);
+          }
+
+          \onslide*<7-13,16->{
+            \draw [line width=3pt, color = red] (m4) -- (m6);
+            \draw [line width=3pt, color = green] (m2) -- (m4);
+          }
+
+          \onslide*<2-5>{
+            \draw (d7) -- (m8);
+            \draw (m6) -- (m8);
+          }
+
+          \draw (d5) -- (d7);
+          \draw (d3) -- (d5);
+          \draw (m2) -- (d3);
+
+          \onslide*<-6,14-15>{
+            \draw (m4) -- (m6);
+            \draw (m2) -- (m4);
+          }
+          \draw (m0) -- (m2);
+
+        \end{tikzpicture}
+
+        {\footnotesize{(A \alert{$\leftarrow$ HEAD})}}
+      \end{center}
+
+    \end{narrowcolumn}
+
+    \begin{widecolumn}
+
+      \onslide*<1-5>{
+        方法1
+
+        気にせず no first forward merge
+
+        \onslide<3->{
+          \begin{itemize}
+          \item 簡単に実行可能
+            \onslide<4->{
+            \item よーく考えると
+
+              \onslide<5>{全然解決になっていない}
+            }
+          \end{itemize}
+        }
+      }
+
+      \onslide*<6-13>{
+        方法2
+
+        git diff により A 上の
+
+        commit のパッチを作成
+        \vspace{2ex}
+
+        \onslide*<8->{A の向き先を B へ変更}
+        \vspace{2ex}
+
+        \onslide<10->{
+          作ったパッチを適用し、
+
+          新しく commit
+        }
+
+        \onslide<12->{
+          \begin{itemize}
+          \item 履歴が 1直線になる
+            \onslide<13->{\item パッチ適用の数だけ衝突の可能性あり}
+            \onslide<14->{\item 手作業が辛い}
+          \end{itemize}
+        }
+      }
+
+      \onslide*<14-18>{
+        方法3
+
+        方法2 を自動化する
+
+        \onslide<15->{\$ git rebase A}
+
+        \onslide<17->{
+          \begin{itemize}
+          \item 履歴が 1直線になる
+            \onslide<18->{\item commit の数だけ衝突する可能性あり}
+          \end{itemize}
+        }
+      }
+
+      \onslide*<19->{
+        図から分かるように、rebase により
+
+        commit が消える事は無い
+        \vspace{2ex}
+
+        \onslide*<20->{branch から外れるだけ}
+        \vspace{2ex}
+
+        \onslide*<21->{
+          gc の前ならば、切り戻し可能
+
+          (デフォルトの gc では、数日間は消されない)
+        }
+        \vspace{2ex}
+
+        \onslide*<22->{
+          rebase に限らず、git では一般的に
+
+          commit がその場で消える事は無い
+
+          多くの場合、切り戻し可能
+        }
+      }
+    \end{widecolumn}
+  \end{columns}
+
+\end{frame}

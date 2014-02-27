@@ -1,0 +1,70 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  subversion から git へ
+\end{frame}
+
+
+\begin{frame}[t]{subversion から git へ}{}
+
+  個人的に subversion から git へ移行して変わった事
+  \onslide*<2->{
+    \begin{enumerate}
+    \item commit が細かくなる
+    \item push しない前提の commit が可能
+    \end{enumerate}
+  }
+\end{frame}
+
+
+\begin{frame}[t]{subversion から git へ}{commit が細かくなる}
+
+  \begin{enumerate}
+  \item push 前に直せば良いので、気軽に commit
+    \onslide*<2->{
+    \item commit が小さく、多くなる
+      \onslide*<3->{
+        \begin{itemize}
+        \item 開発中に細かい切り戻しが可能
+        \item 必要なパッチだけ、ピンポイントで選択可能
+        \item 問題のある commit を特定するだけで
+
+          調査範囲を狭められる
+        \end{itemize}
+      }
+    }
+    \onslide*<4->{\item commit をもっと小さくしたくなる}
+    \onslide*<5->{
+      \begin{itemize}
+      \item test を書くようになる
+
+        (commit 回数が多いと test 実行回数も増えるので
+
+        ~test の効果が高い)
+      \item 後から変更しやすいコードを意識するようになる
+
+        小さいパッチで commit するには、
+
+        最初から変更に耐えるコードである必要がある
+
+        (もし、そうでないならリファクタリングを挟む)
+      \end{itemize}
+    }
+  \end{enumerate}
+
+\end{frame}

@@ -1,0 +1,96 @@
+% Copyright 2014 Yoshida Shin
+% 
+% This is part of "Git Second Step."
+% 
+% This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\begin{frame}{}{}
+  迷子になったら
+\end{frame}
+
+\begin{frame}[t]{迷子になったら}{}
+
+  \onslide*<1-5>{
+    git を使っていると、時々迷子になる
+    \vspace{4ex}
+
+    \onslide<2->{
+      \begin{itemize}
+      \item 不要な git reset したけど、よく考えると必要
+        \onslide<3->{\item 消してはいけない branch を消してしまった}
+        \onslide<4->{\item さっきの rebase をきり戻したい}
+        \onslide*<5>{\item 単純なコマンドミス}
+      \end{itemize}
+    }
+
+  }
+
+  \onslide*<6-8>{
+    git では branch や HEAD は
+
+    あくまでリンクもどき
+    \vspace{4ex}
+
+    \onslide<7->{
+      何をしても、commit 自体はしばらく残る
+      \vspace{2ex}
+
+      \onslide<8->{
+        commit のハッシュ値さえ分かれば
+
+        いつでも checkout できるし、
+
+        branch も作れる
+      }
+    }
+
+  }
+
+  \onslide*<9->{
+    直近で動いてきた HEAD の履歴を追う
+    \vspace{2ex}
+
+    \onslide<10->{
+      \$ git reflog
+      \vspace{2ex}
+
+      \onslide<11->{
+        \code{
+          e52e284 HEAD@\{0\}: cherry-pick: G
+
+          11c7ef8 HEAD@\{1\}: reset: moving to 11c7
+
+          01951fe HEAD@\{2\}: cherry-pick: H
+
+          11c7ef8 HEAD@\{3\}: checkout: moving from devel to master
+
+          52f921f HEAD@\{4\}: checkout: moving from master to devel
+
+          11c7ef8 HEAD@\{5\}: commit: J
+
+          ffa3ca9 HEAD@\{6\}: checkout: moving from spike to master
+
+          ...
+        }
+      }
+    }
+    \vspace{2ex}
+
+    \onslide<12->{
+      このハッシュ値や HEAD@\{n\} のリンクを使用して
+
+      checkout 可能
+    }
+  }
+\end{frame}
